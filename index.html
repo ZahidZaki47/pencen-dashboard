@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Pencen</title>
+<style>
+  :root{--bg:#0b0e14;--card:#131826;--card2:#1a2132;--line:#232b3e;--fg:#e8edf6;
+        --dim:#7d8aa5;--green:#2ecc71;--red:#ff5c5c;--gold:#e8b33d;--blue:#4f8ef7;
+        --badge:#1d2b45;--arah:#4f8ef7;--arus:#14b8a6;--cara:#a78bfa}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);
+       font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+       display:flex;justify-content:center;padding:0 12px 24px;min-height:100vh}
+  .wrap{width:100%;max-width:430px}
+  .top{display:flex;justify-content:space-between;align-items:center;padding:14px 2px 10px}
+  h1{font-size:18px;letter-spacing:2px}
+  .sub{color:var(--dim);font-size:11px;margin-top:2px}
+  .ws{font-size:10.5px;color:var(--dim);text-align:right;line-height:1.5}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dim);margin-right:4px}
+  .dot.on{background:var(--green)}
+  .tabs{position:sticky;top:0;z-index:10;display:flex;gap:5px;background:var(--bg);padding:8px 0 10px}
+  .tab{flex:1;text-align:center;padding:9px 0;border-radius:10px;font-size:11.5px;
+       font-weight:700;color:var(--dim);background:var(--card);border:1px solid var(--line);
+       cursor:pointer;user-select:none}
+  .tab.on{color:#fff;background:var(--badge);border-color:var(--blue)}
+  .pane{display:none}.pane.on{display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:11px}
+  .label{color:var(--dim);font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:9px}
+  .big{font-size:32px;font-weight:700}
+  .pnl{font-size:14px;margin-top:2px}
+  .pos{color:var(--green)}.neg{color:var(--red)}.dim{color:var(--dim)}
+  .syscard{display:flex;justify-content:space-between;align-items:center;background:var(--card2);
+           border-radius:11px;padding:12px;margin-bottom:8px;cursor:pointer;border-left:3px solid var(--blue)}
+  .syscard .nm{font-size:14px;font-weight:700;letter-spacing:1px}
+  .syscard .md{font-size:10px;color:var(--dim);margin-top:3px}
+  .syscard .eq{font-size:15px;font-weight:700;text-align:right}
+  .syscard .pp{font-size:11.5px;text-align:right;margin-top:2px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px}
+  .mini{background:var(--card2);border-radius:9px;padding:8px 4px;text-align:center;border:1px solid transparent}
+  .mini.on{border-color:var(--green)}
+  .mini .nm{font-size:10px;color:var(--dim)}
+  .mini .pr{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+  .mini .ch{font-size:9.5px;margin-top:1px}
+  .mini .held{font-size:8px;font-weight:700;color:var(--green);margin-top:2px;min-height:10px}
+  .badge{display:inline-block;background:var(--badge);border:1px solid var(--line);color:var(--blue);
+         font-size:10.5px;font-weight:600;border-radius:20px;padding:3px 10px;margin:2px 3px 2px 0}
+  .badge.green{color:var(--green)}.badge.gold{color:var(--gold)}
+  .bar-row{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px}
+  .bar-name{width:48px;color:var(--dim)}
+  .bar-track{flex:1;height:15px;background:var(--bg);border-radius:5px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:5px;transition:width .6s}
+  .bar-pct{width:50px;text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
+  .row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row .k{color:var(--dim)}
+  .poscard{background:var(--card2);border-radius:11px;padding:12px;margin-bottom:9px;border-left:3px solid var(--blue)}
+  .poshead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .possym{font-size:14px;font-weight:700}
+  .systag{font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:10px;background:var(--badge)}
+  .pnlbig{font-size:14px;font-weight:700}
+  canvas.spark{width:100%;height:80px}
+  .status{background:var(--card2);border-radius:10px;padding:11px;text-align:center;font-size:12.5px;margin-top:10px}
+  .faq{margin-bottom:9px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .faq summary{padding:12px 14px;font-size:13px;font-weight:600;cursor:pointer;list-style:none;position:relative}
+  .faq summary::after{content:"+";position:absolute;right:14px;color:var(--dim);font-size:16px}
+  .faq[open] summary::after{content:"−"}
+  .faq p{padding:0 14px 12px;font-size:12.5px;line-height:1.65;color:var(--fg)}
+  .note{color:var(--dim);font-size:11px;text-align:center;margin-top:6px}
+  .meta{display:flex;justify-content:space-between;color:var(--dim);font-size:10.5px;margin-top:7px}
+  .foot{color:var(--dim);font-size:10.5px;text-align:center;margin-top:12px;line-height:1.6}
+  .sechead{color:var(--dim);font-size:11px;font-weight:700;letter-spacing:1px;margin:14px 4px 8px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>PORTFOLIO PENCEN</h1><div class="sub">3 Sistem · Paper Trading · Syariah</div></div>
+    <div class="ws"><span class="dot" id="wsdot"></span><span id="clock">—</span><br>
+      <span id="wslabel">sambung…</span></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" data-t="semua">Semua</div>
+    <div class="tab" data-t="arah">ARAH</div>
+    <div class="tab" data-t="arus">ARUS</div>
+    <div class="tab" data-t="cara">CARA</div>
+    <div class="tab" data-t="faq">FAQ</div>
+  </div>
+
+  <!-- ═══ SEMUA ═══ -->
+  <div class="pane on" id="pane-semua">
+    <div class="card">
+      <div class="label">Jumlah Equity — 3 Sistem</div>
+      <div class="big" id="total-eq">—</div>
+      <div class="pnl dim" id="total-pnl">memuatkan…</div>
+    </div>
+    <div class="sechead">Setiap Sistem (tekan untuk butiran)</div>
+    <div id="syslist"></div>
+    <div class="sechead">Semua Posisi Terbuka</div>
+    <div id="allpos"></div>
+    <div class="foot">Data setiap sistem dikemas kini automatik setiap pagi ·
+      Harga real-time dari Binance WebSocket</div>
+  </div>
+
+  <!-- ═══ PER SISTEM (dijana JS) ═══ -->
+  <div class="pane" id="pane-arah"></div>
+  <div class="pane" id="pane-arus"></div>
+  <div class="pane" id="pane-cara"></div>
+
+  <!-- ═══ FAQ ═══ -->
+  <div class="pane" id="pane-faq">
+    <div class="sechead">Asas</div>
+    <details class="faq"><summary>Apa sebenarnya sistem ini?</summary><p>Tiga robot pelaburan automatik yang membeli aset kripto &amp; emas digital secara <b>spot</b> (aset sebenar). Setiap robot menggunakan falsafah berbeza, berjalan sendiri setiap hari di awan (GitHub), tanpa emosi dan tanpa campur tangan manusia. Ketiga-tiganya sedang berlumba selama 6 bulan — yang terbaik akan dipilih untuk wang sebenar.</p></details>
+    <details class="faq"><summary>Apa itu "paper trading"?</summary><p>Trading simulasi: harga sebenar, keputusan sebenar, kos urus niaga dikira — tetapi wangnya tidak sebenar ($3,000 simulasi setiap sistem). Ia peperiksaan akhir sebelum modal sebenar digunakan. Amalan standard industri sebelum go-live.</p></details>
+    <details class="faq"><summary>Apa beza ARAH, ARUS dan CARA?</summary><p><b>ARAH</b> = penembak tepat: pilih SATU aset paling kuat antara Bitcoin, Ethereum dan Emas. <b>ARUS</b> = penjaring: pegang 3 aset paling kuat daripada 10. <b>CARA</b> = pemandu berhemah: pegang 3 aset paling TENANG (paling kurang bergolak) daripada 12. Dua yang pertama ikut kekuatan; yang ketiga ikut kestabilan.</p></details>
+    <details class="faq"><summary>Sistem mana paling bagus?</summary><p>Belum diketahui — itulah tujuan perlumbaan ini. Ujian sejarah menunjukkan profil berbeza: ARAH berpotensi pulangan tertinggi tetapi risiko lebih tinggi; ARUS dan CARA lebih stabil. Keputusan muktamad berdasarkan prestasi SEBENAR 6 bulan (sehingga Januari 2027), bukan ramalan.</p></details>
+    <details class="faq"><summary>Siapa yang membuat keputusan beli/jual?</summary><p>100% algoritma — formula matematik yang telah diuji ke atas 5–9 tahun data sejarah dan lulus audit ketat. Tiada manusia menekan butang. Sistem berjalan automatik setiap pagi (~8:15–8:30 pagi waktu Malaysia) di komputer awan GitHub.</p></details>
+
+    <div class="sechead">Duit &amp; Untung</div>
+    <details class="faq"><summary>Bagaimana duit bergerak? Apa peranan USDT?</summary><p>USDT ialah "dolar digital" (1 USDT ≈ $1). Aliran: anda topup USDT ke akaun Binance → sistem guna USDT membeli aset → bila jual, aset kembali menjadi USDT berserta untung/rugi. Baki yang tidak dilabur sentiasa kekal sebagai USDT.</p></details>
+    <details class="faq"><summary>Apa maksud "Alokasi 11%"?</summary><p>11% daripada nilai portfolio berada dalam aset itu (contoh: $342 daripada $3,000), selebihnya USDT. Alokasi BUKAN tetap — ia dilaras automatik setiap hari oleh "dail risiko".</p></details>
+    <details class="faq"><summary>Kenapa alokasi kecil sekarang? Kenapa tak all-in?</summary><p>Dail risiko: sistem mengukur golakan pasaran setiap hari. Pasaran bergolak = pegang kecil; pasaran tenang = alokasi membesar sendiri (maksimum ~33% seaset untuk sistem 3-aset, 100% untuk ARAH). All-in sepanjang masa terbukti dalam ujian menghasilkan kejatuhan 60–90% semasa crash — dail risiko memotongnya kepada 14–22%.</p></details>
+    <details class="faq"><summary>Berapa jangkaan untung?</summary><p>Anggaran jujur daripada simulasi 10,000 senario: purata $24–48 sebulan bagi setiap $3,000 — TETAPI sekitar 40–45% bulan akan negatif. Ini purata jangka panjang, bukan gaji tetap bulanan. Sesiapa yang menjanjikan untung tetap setiap bulan dalam kripto adalah penipu.</p></details>
+    <details class="faq"><summary>Boleh rugi? Berapa teruk?</summary><p>Boleh. Ujian sejarah menunjukkan kejatuhan terburuk (drawdown) -14% hingga -22% dari puncak, dan bulan terburuk sekitar -7% hingga -10%. Tiada jaminan masa depan menyamai sejarah. Sebab itulah wang sebenar hanya masuk selepas perlumbaan paper 6 bulan.</p></details>
+    <details class="faq"><summary>Adakah kos urus niaga dikira?</summary><p>Ya — setiap belian/jualan ditolak 0.075–0.15% (fee Binance + slippage). Semua angka prestasi yang dipaparkan sudah bersih daripada kos.</p></details>
+
+    <div class="sechead">Cara Sistem Berfikir</div>
+    <details class="faq"><summary>Apakah syarat sebelum sistem membeli?</summary><p><b>ARAH:</b> awal bulan + aset terkuat mesti positif 90 hari. <b>ARUS:</b> awal bulan + aset dalam 3 teratas ranking kekuatan + positif. <b>CARA:</b> awal bulan + aset dalam 3 terendah golakan. Jika syarat tidak dipenuhi, sistem duduk dalam USDT — tidak memaksa trade.</p></details>
+    <details class="faq"><summary>Bila posisi ditutup? Ada stop loss / take profit?</summary><p>Tiada SL/TP pada harga tetap. Tiga mekanisme automatik: <b>(1) Rotasi awal bulan</b> — aset yang tidak lagi layak dijual dan diganti; <b>(2) Dail risiko harian</b> — saiz posisi dikecilkan beransur bila pasaran bergolak (pengganti stop loss yang lebih halus); <b>(3) Mod pertahanan</b> — 100% USDT bila tiada aset layak. Purata pegangan: 1–3 bulan.</p></details>
+    <details class="faq"><summary>Kenapa hanya rotasi sebulan sekali? Bukankah rugi peluang?</summary><p>Kami uji dengan data 5 tahun: rotasi harian memberi pulangan LEBIH RENDAH (Sharpe 0.74 vs 0.85), kejatuhan LEBIH BESAR (-29% vs -14%) dan kos 4× ganda ($350 vs $87 setahun). Pergerakan harian kebanyakannya bunyi bising — bertindak atasnya bermakna membeli puncak palsu dan menjual lembah palsu berulang kali.</p></details>
+    <details class="faq"><summary>Kenapa keputusan guna harga penutup harian, bukan real-time?</summary><p>Disiplin anti-bias: keputusan hanya dibuat atas lilin harian yang SUDAH LENGKAP — sama seperti ujian sejarahnya. Harga real-time di dashboard ini untuk paparan sahaja. Bertindak atas lilin belum lengkap ialah kesilapan klasik yang kami temui dan buang semasa audit.</p></details>
+    <details class="faq"><summary>Kenapa aset-aset ini sahaja? Kenapa tiada coin X?</summary><p>Dua saringan: <b>(1) Syariah</b> — hanya aset yang disahkan patuh oleh SAC Suruhanjaya Sekuriti Malaysia atau piawaian antarabangsa AAOIFI; <b>(2) Kualiti</b> — bersaiz besar, cair, bersejarah panjang. Coin kecil/viral sengaja dielakkan: risiko manipulasi dan kecairan.</p></details>
+    <details class="faq"><summary>Kenapa ada EMAS (PAXG) dalam senarai kripto?</summary><p>PAXG ialah emas fizikal dalam bentuk token — 1 token = 1 auns emas tulen tersimpan dalam bilik kebal London, disahkan patuh Syariah bawah piawaian emas AAOIFI No. 57. Fungsinya: tempat berlindung yang masih boleh naik bila pasaran kripto lemah. Ia penyeimbang portfolio yang kritikal.</p></details>
+
+    <div class="sechead">Syariah</div>
+    <details class="faq"><summary>Bagaimana sistem ini patuh Syariah?</summary><p>Empat prinsip dikuatkuasakan dalam kod: <b>(1)</b> Spot sahaja — membeli aset sebenar, bukan kontrak; <b>(2)</b> Tiada leverage/margin (riba); <b>(3)</b> Tiada short selling (menjual yang tidak dimiliki); <b>(4)</b> Tiada faedah/staking. Universe aset disaring melalui senarai patuh Syariah SAC SC Malaysia (via Luno) dan AAOIFI.</p></details>
+    <details class="faq"><summary>Duit menunggu dalam USDT — patuh Syariah?</summary><p>USDT dipegang sebagai medium tunai (seperti memegang dolar), bukan produk faedah. Sistem TIDAK meletakkan USDT dalam produk "earn"/pinjaman/staking yang menjana riba — ia duduk kosong dalam akaun sahaja.</p></details>
+
+    <div class="sechead">Teknikal &amp; Operasi</div>
+    <details class="faq"><summary>Platform apa? MT4/MT5/NinjaTrader?</summary><p>Bukan — itu platform forex/CFD (berleverage, tidak patuh Syariah). Sistem ini berjalan di awan GitHub dan (jika go-live) akan berurus niaga terus di <b>Binance Spot</b> melalui API. Aset benar-benar dimiliki dan boleh dikeluarkan ke wallet peribadi.</p></details>
+    <details class="faq"><summary>Melihat dashboard ini menjejaskan trade tak?</summary><p>Tidak sama sekali. Dashboard hanya PAPARAN (baca sahaja) — enjin trading berjalan berasingan di awan mengikut jadual, tidak kira dashboard dibuka atau tidak, oleh seorang atau seribu orang.</p></details>
+    <details class="faq"><summary>Bila data dashboard dikemas kini?</summary><p>Keputusan sistem &amp; equity: sekali sehari (~8:15–8:30 pagi Malaysia, selepas lilin harian ditutup 8:00 pagi). Harga pasaran di dashboard: real-time setiap saat melalui WebSocket Binance.</p></details>
+    <details class="faq"><summary>Apa jadi kalau internet/sistem rosak?</summary><p>Reka bentuk fail-safe: jika data tidak lengkap atau lapuk, sistem ENGGAN membuat keputusan (tiada trade) dan menghantar amaran — ia tidak akan meneka. Semua rekod disimpan dalam repositori berversi (setiap perubahan boleh diaudit).</p></details>
+    <details class="faq"><summary>Kenapa carta equity nampak rata?</summary><p>Paper trading baru bermula Julai 2026 — carta diisi SATU titik sehari. Selepas beberapa bulan ia menjadi rekod prestasi sebenar yang digunakan untuk memilih sistem terbaik.</p></details>
+    <details class="faq"><summary>Apa maksud "DIPEGANG" pada kad aset?</summary><p>Aset itu sedang berada dalam portfolio sistem tersebut. Kad tanpa label = dipantau tetapi tidak dipegang sekarang.</p></details>
+    <details class="faq"><summary>Boleh saya ikut belian sistem ini dengan duit saya?</summary><p>Tidak digalakkan buat masa ini — ini fasa ujian (paper). Tunggu perlumbaan 6 bulan selesai dan sistem juara disahkan. Dashboard ini bukan nasihat kewangan.</p></details>
+    <details class="faq"><summary>Apa itu Sharpe / Drawdown / p-value yang disebut dalam dokumen?</summary><p><b>Sharpe</b> = pulangan berbanding risiko (>1 sangat baik). <b>Drawdown</b> = kejatuhan terburuk dari puncak. <b>p-value</b> = kebarangkalian keputusan hanyalah nasib (p=0.014 → 1.4% sahaja kemungkinan nasib). Glosari penuh dalam PANDUAN_STRATEGI.md (repo private).</p></details>
+    <div class="foot">Soalan tidak terjawab? Tambah ke PANDUAN_STRATEGI.md dalam repo private.</div>
+  </div>
+</div>
+
+<script>
+const COLORS = {BTC:"#f7931a", ETH:"#627eea", BNB:"#f3ba2f", SOL:"#14f195", ADA:"#0033ad",
+                LTC:"#345d9d", DOT:"#e6007a", LINK:"#2a5ada", AVAX:"#e84142", PAXG:"#e8b33d",
+                XRP:"#00aae4", XLM:"#54c4f2", ATOM:"#6f7390", UNI:"#ff007a", USDT:"#2ecc71"};
+const SYSTEMS = {
+  arah: {name:"ARAH", color:"var(--arah)", repo:"arah-dashboard", file:"arah_state.json",
+         syms:["BTCUSDT","ETHUSDT","PAXGUSDT"],
+         desc:"Pilih SATU aset paling kuat (BTC / ETH / Emas) — atau tunai."},
+  arus: {name:"ARUS", color:"var(--arus)", repo:"arus-dashboard", file:"arus_state.json",
+         syms:["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","ADAUSDT","LTCUSDT","DOTUSDT","LINKUSDT","AVAXUSDT","PAXGUSDT"],
+         desc:"Pegang 3 aset paling KUAT daripada 10."},
+  cara: {name:"CARA", color:"var(--cara)", repo:"cara-dashboard", file:"cara_state.json",
+         syms:["BTCUSDT","ETHUSDT","ADAUSDT","XRPUSDT","SOLUSDT","AVAXUSDT","LINKUSDT","LTCUSDT","XLMUSDT","ATOMUSDT","UNIUSDT","PAXGUSDT"],
+         desc:"Pegang 3 aset paling TENANG daripada 12."},
+};
+const ALLSYMS = [...new Set(Object.values(SYSTEMS).flatMap(s=>s.syms))];
+let states = {}, live = {};
+
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => selectTab(t.dataset.t));
+function selectTab(key){
+  document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x.dataset.t === key));
+  document.querySelectorAll(".pane").forEach(x => x.classList.remove("on"));
+  document.getElementById("pane-" + key).classList.add("on");
+}
+
+function fmt(n, d=2){ return n.toLocaleString("en-US",{minimumFractionDigits:d, maximumFractionDigits:d}); }
+function px_fmt(p){ return "$" + fmt(p, p >= 1000 ? 0 : (p >= 1 ? 2 : 4)); }
+
+function liveEquity(st){
+  if (!st) return null;
+  let eq = st.cash_usd;
+  for (const [sym, qty] of Object.entries(st.holdings || {})){
+    const lp = live[sym] ? live[sym].price : null;
+    if (lp === null) return st.equity;
+    eq += qty * lp;
+  }
+  return eq;
+}
+
+function posCards(key, st, withTag){
+  const held = Object.keys(st.positions || {});
+  if (!held.length) return "";
+  let out = "";
+  for (const [nm, p] of Object.entries(st.positions)){
+    const lp = live[nm+"USDT"] ? live[nm+"USDT"].price : null;
+    const upnl = (lp && p.avg_cost) ? (lp/p.avg_cost - 1) * 100 : null;
+    const val = lp ? p.qty * lp : null;
+    const cls = upnl === null ? "dim" : (upnl >= 0 ? "pos" : "neg");
+    out += `<div class="poscard" style="border-left-color:${COLORS[nm]||"#4f8ef7"}">
+      <div class="poshead"><span class="possym">${nm}
+        ${withTag?`<span class="systag" style="color:${SYSTEMS[key].color}">${SYSTEMS[key].name}</span>`:""}</span>
+        <span class="pnlbig ${cls}">${upnl===null?"—":(upnl>=0?"+":"")+upnl.toFixed(2)+"%"}</span></div>
+      <div class="row"><span class="k">Masuk purata</span><span>${p.avg_cost?px_fmt(p.avg_cost):"—"}</span></div>
+      <div class="row"><span class="k">Harga kini</span><span>${lp?px_fmt(lp):"menunggu…"}</span></div>
+      <div class="row"><span class="k">Nilai posisi</span><span>${val?"$"+fmt(val):"—"}</span></div>
+      <div class="row"><span class="k">Sejak</span><span>${p.since?p.since.slice(0,10):"—"}</span></div>
+    </div>`;
+  }
+  return out;
+}
+
+function renderSystemPane(key){
+  const st = states[key], cfg = SYSTEMS[key];
+  const pane = document.getElementById("pane-" + key);
+  if (!st){ pane.innerHTML = '<div class="card"><div class="status">Memuatkan…</div></div>'; return; }
+  const eq = liveEquity(st) ?? st.equity;
+  const pnl = eq - st.initial, up = pnl >= 0;
+  const held = Object.keys(st.positions || {});
+  let alloc = "";
+  for (const [name, pct] of Object.entries(st.allocation_pct || {})){
+    if (pct < 0.5) continue;
+    alloc += `<div class="bar-row"><span class="bar-name">${name}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${COLORS[name]||"#7d8aa5"}"></div></div>
+      <span class="bar-pct">${pct.toFixed(1)}%</span></div>`;
+  }
+  let grid = "";
+  for (const sym of cfg.syms){
+    const nm = sym.replace("USDT","");
+    const lp = live[sym];
+    const isHeld = held.includes(nm);
+    grid += `<div class="mini${isHeld?" on":""}"><div class="nm">${nm}</div>
+      <div class="pr">${lp?px_fmt(lp.price):"—"}</div>
+      <div class="ch ${lp&&lp.chg>=0?"pos":"neg"}">${lp?(lp.chg>=0?"+":"")+lp.chg.toFixed(1)+"%":""}</div>
+      <div class="held">${isHeld?"DIPEGANG":""}</div></div>`;
+  }
+  pane.innerHTML = `
+    <div class="card">
+      <div class="label">${cfg.name} — Equity
+        <span style="float:right">${held.length
+          ? '<span class="badge green">AKTIF — '+held.join("/")+'</span>'
+          : '<span class="badge gold">PERTAHANAN</span>'}</span></div>
+      <div class="big">$${fmt(eq)}</div>
+      <div class="pnl ${up?"pos":"neg"}">${(up?"+":"−")}$${fmt(Math.abs(pnl))} (${(up?"+":"")+((eq/st.initial-1)*100).toFixed(2)}%)</div>
+      <div class="note" style="text-align:left;margin-top:8px">${cfg.desc}</div>
+    </div>
+    <div class="card"><div class="label">Alokasi</div>${alloc}
+      <div class="note">Baki kekal USDT · saiz dilaras automatik setiap hari</div></div>
+    ${held.length ? `<div class="card"><div class="label">Posisi Terbuka</div>${posCards(key, st, false)}</div>`
+      : `<div class="card"><div class="label">Posisi</div><div class="status">Tiada — 100% USDT sehingga rotasi bulan berikutnya.</div></div>`}
+    <div class="card"><div class="label">Universe</div><div class="grid">${grid}</div></div>
+    <div class="card"><div class="label">Rekod Prestasi</div>
+      <canvas class="spark" id="spark-${key}" width="800" height="160"></canvas>
+      <div class="meta"><span>Data: ${st.bar_date}</span><span>Trade: ${st.n_trades}</span></div></div>`;
+  drawSpark("spark-"+key, (st.history||[]).map(h=>h.equity));
+}
+
+function drawSpark(id, vals){
+  const cv = document.getElementById(id);
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  ctx.clearRect(0,0,cv.width,cv.height);
+  if (vals.length === 1) vals = [vals[0], vals[0]];
+  if (vals.length < 2) return;
+  const min = Math.min(...vals), max = Math.max(...vals), pad = (max-min)||1;
+  ctx.beginPath();
+  vals.forEach((v,i)=>{
+    const x = i/(vals.length-1)*cv.width;
+    const y = cv.height-10 - (v-min)/pad*(cv.height-20);
+    i? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+  });
+  ctx.strokeStyle = vals[vals.length-1] >= vals[0] ? "#2ecc71" : "#ff5c5c";
+  ctx.lineWidth = 2.5; ctx.stroke();
+}
+
+function renderAll(){
+  let total = 0, totalInit = 0, any = false;
+  const sl = document.getElementById("syslist");
+  sl.innerHTML = "";
+  let ap = "";
+  for (const [key, cfg] of Object.entries(SYSTEMS)){
+    const st = states[key];
+    if (!st){
+      sl.innerHTML += `<div class="syscard" style="border-left-color:${cfg.color}">
+        <div><div class="nm">${cfg.name}</div><div class="md">memuatkan…</div></div></div>`;
+      continue;
+    }
+    any = true;
+    const eq = liveEquity(st) ?? st.equity;
+    total += eq; totalInit += st.initial;
+    const pnlPct = (eq/st.initial - 1) * 100;
+    const held = Object.keys(st.positions || {});
+    const card = document.createElement("div");
+    card.className = "syscard";
+    card.style.borderLeftColor = "";
+    card.style.borderLeft = "3px solid " + cfg.color;
+    card.onclick = () => selectTab(key);
+    card.innerHTML = `<div><div class="nm">${cfg.name}</div>
+        <div class="md">${held.length ? "AKTIF: " + held.join(", ") : "PERTAHANAN — tunai"}</div></div>
+      <div><div class="eq">$${fmt(eq)}</div>
+        <div class="pp ${pnlPct>=0?"pos":"neg"}">${(pnlPct>=0?"+":"")}${pnlPct.toFixed(2)}%</div></div>`;
+    sl.appendChild(card);
+    ap += posCards(key, st, true);
+    renderSystemPane(key);
+  }
+  if (any){
+    document.getElementById("total-eq").textContent = "$" + fmt(total);
+    const tp = total - totalInit, up = tp >= 0;
+    const el = document.getElementById("total-pnl");
+    el.textContent = (up?"+":"−") + "$" + fmt(Math.abs(tp)) + "  (" + (up?"+":"") +
+                     ((total/totalInit-1)*100).toFixed(2) + "%)  daripada $" + fmt(totalInit,0);
+    el.className = "pnl " + (up?"pos":"neg");
+  }
+  document.getElementById("allpos").innerHTML = ap ||
+    `<div class="card"><div class="status">Tiada posisi terbuka — semua sistem dalam mod pertahanan (USDT).</div></div>`;
+}
+
+async function loadStates(){
+  await Promise.all(Object.entries(SYSTEMS).map(async ([key, cfg]) => {
+    const sources = [
+      `https://raw.githubusercontent.com/ZahidZaki47/${cfg.repo}/main/${cfg.file}`,
+      `https://zahidzaki47.github.io/${cfg.repo}/${cfg.file}`,
+    ];
+    for (const src of sources){
+      try{
+        const r = await fetch(src + "?t=" + Date.now(), {cache:"no-store"});
+        if (!r.ok) continue;
+        states[key] = await r.json();
+        return;
+      }catch(e){}
+    }
+  }));
+  renderAll();
+}
+
+function connectWS(){
+  const streams = ALLSYMS.map(s=>s.toLowerCase()+"@miniTicker").join("/");
+  const ws = new WebSocket("wss://stream.binance.com:9443/stream?streams=" + streams);
+  ws.onopen = ()=>{ document.getElementById("wsdot").className="dot on";
+                    document.getElementById("wslabel").textContent="Live"; };
+  let last = 0;
+  ws.onmessage = (ev)=>{
+    const d = JSON.parse(ev.data).data;
+    live[d.s] = {price: parseFloat(d.c), chg: (parseFloat(d.c)/parseFloat(d.o)-1)*100};
+    const now = Date.now();
+    if (now - last > 900){ last = now; renderAll(); }
+  };
+  ws.onclose = ()=>{ document.getElementById("wsdot").className="dot";
+                     document.getElementById("wslabel").textContent="sambung semula…";
+                     setTimeout(connectWS, 3000); };
+  ws.onerror = ()=>ws.close();
+}
+
+setInterval(()=>{ document.getElementById("clock").textContent =
+  new Date().toLocaleTimeString("ms-MY",{timeZone:"Asia/Kuala_Lumpur"}); }, 1000);
+loadStates();
+setInterval(loadStates, 120000);
+connectWS();
+</script>
+</body>
+</html>

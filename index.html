@@ -7,7 +7,7 @@
 <style>
   :root{--bg:#0b0e14;--card:#131826;--card2:#1a2132;--line:#232b3e;--fg:#e8edf6;
         --dim:#7d8aa5;--green:#2ecc71;--red:#ff5c5c;--gold:#e8b33d;--blue:#4f8ef7;
-        --badge:#1d2b45;--arah:#4f8ef7;--arus:#14b8a6;--cara:#a78bfa}
+        --badge:#1d2b45;--arah:#4f8ef7;--arus:#14b8a6;--cara:#a78bfa;--gab:#f59e0b}
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--bg);color:var(--fg);
        font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -75,7 +75,7 @@
 <body>
 <div class="wrap">
   <div class="top">
-    <div><h1>PORTFOLIO PENCEN</h1><div class="sub">3 Sistem · Paper Trading · Syariah</div></div>
+    <div><h1>PORTFOLIO PENCEN</h1><div class="sub">4 Sistem · Paper Trading · Syariah</div></div>
     <div class="ws"><span class="dot" id="wsdot"></span><span id="clock">—</span><br>
       <span id="wslabel">sambung…</span></div>
   </div>
@@ -85,13 +85,14 @@
     <div class="tab" data-t="arah">ARAH</div>
     <div class="tab" data-t="arus">ARUS</div>
     <div class="tab" data-t="cara">CARA</div>
+    <div class="tab" data-t="gabungan">GABUNGAN</div>
     <div class="tab" data-t="faq">FAQ</div>
   </div>
 
   <!-- ═══ SEMUA ═══ -->
   <div class="pane on" id="pane-semua">
     <div class="card">
-      <div class="label">Jumlah Equity — 3 Sistem</div>
+      <div class="label">Jumlah Equity — 4 Sistem</div>
       <div class="big" id="total-eq">—</div>
       <div class="pnl dim" id="total-pnl">memuatkan…</div>
     </div>
@@ -107,6 +108,7 @@
   <div class="pane" id="pane-arah"></div>
   <div class="pane" id="pane-arus"></div>
   <div class="pane" id="pane-cara"></div>
+  <div class="pane" id="pane-gabungan"></div>
 
   <!-- ═══ FAQ ═══ -->
   <div class="pane" id="pane-faq">
@@ -151,7 +153,7 @@
 </div>
 
 <script>
-const COLORS = {BTC:"#f7931a", ETH:"#627eea", BNB:"#f3ba2f", SOL:"#14f195", ADA:"#0033ad",
+const COLORS = {HLAL:"#f59e0b", BTC:"#f7931a", ETH:"#627eea", BNB:"#f3ba2f", SOL:"#14f195", ADA:"#0033ad",
                 LTC:"#345d9d", DOT:"#e6007a", LINK:"#2a5ada", AVAX:"#e84142", PAXG:"#e8b33d",
                 XRP:"#00aae4", XLM:"#54c4f2", ATOM:"#6f7390", UNI:"#ff007a", USDT:"#2ecc71"};
 const SYSTEMS = {
@@ -164,6 +166,9 @@ const SYSTEMS = {
   cara: {name:"CARA", color:"var(--cara)", repo:"cara-dashboard", file:"cara_state.json",
          syms:["BTCUSDT","ETHUSDT","ADAUSDT","XRPUSDT","SOLUSDT","AVAXUSDT","LINKUSDT","LTCUSDT","XLMUSDT","ATOMUSDT","UNIUSDT","PAXGUSDT"],
          desc:"Pegang 3 aset paling TENANG daripada 12."},
+  gabungan: {name:"GABUNGAN", color:"var(--gab)", repo:"pencen-dashboard", file:"gabungan_state.json",
+         syms:["BTCUSDT","ETHUSDT","PAXGUSDT"],
+         desc:"50% ARAH (crypto + emas) + 50% ETF saham Syariah AS (HLAL), imbang semula 50/50 setiap bulan. Harga HLAL = tutup terakhir Nasdaq."},
 };
 const ALLSYMS = [...new Set(Object.values(SYSTEMS).flatMap(s=>s.syms))];
 let states = {}, live = {};
@@ -182,8 +187,9 @@ function liveEquity(st){
   if (!st) return null;
   let eq = st.cash_usd;
   for (const [sym, qty] of Object.entries(st.holdings || {})){
-    const lp = live[sym] ? live[sym].price : null;
-    if (lp === null) return st.equity;
+    const nm = sym.replace("USDT","");
+    const lp = live[sym] ? live[sym].price : (st.positions && st.positions[nm] ? st.positions[nm].last_price : null);
+    if (lp === null || lp === undefined) return st.equity;
     eq += qty * lp;
   }
   return eq;
@@ -194,7 +200,7 @@ function posCards(key, st, withTag){
   if (!held.length) return "";
   let out = "";
   for (const [nm, p] of Object.entries(st.positions)){
-    const lp = live[nm+"USDT"] ? live[nm+"USDT"].price : null;
+    const lp = live[nm+"USDT"] ? live[nm+"USDT"].price : (p.last_price || null);
     const upnl = (lp && p.avg_cost) ? (lp/p.avg_cost - 1) * 100 : null;
     const val = lp ? p.qty * lp : null;
     const cls = upnl === null ? "dim" : (upnl >= 0 ? "pos" : "neg");

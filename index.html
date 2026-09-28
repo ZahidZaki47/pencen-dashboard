@@ -100,7 +100,7 @@
     <div class="sechead">Semua Posisi Terbuka</div>
     <div id="allpos"></div>
     <div class="foot">Data setiap sistem dikemas kini automatik setiap pagi ·
-      Harga real-time dari Binance WebSocket</div>
+      Harga pasaran awam Binance (binance.vision)</div>
   </div>
 
   <!-- ═══ PER SISTEM (dijana JS) ═══ -->
@@ -140,7 +140,7 @@
     <div class="sechead">Teknikal &amp; Operasi</div>
     <details class="faq"><summary>Platform apa? MT4/MT5/NinjaTrader?</summary><p>Bukan — itu platform forex/CFD (berleverage, tidak patuh Syariah). Sistem ini berjalan di awan GitHub dan (jika go-live) akan berurus niaga terus di <b>Binance Spot</b> melalui API. Aset benar-benar dimiliki dan boleh dikeluarkan ke wallet peribadi.</p></details>
     <details class="faq"><summary>Melihat dashboard ini menjejaskan trade tak?</summary><p>Tidak sama sekali. Dashboard hanya PAPARAN (baca sahaja) — enjin trading berjalan berasingan di awan mengikut jadual, tidak kira dashboard dibuka atau tidak, oleh seorang atau seribu orang.</p></details>
-    <details class="faq"><summary>Bila data dashboard dikemas kini?</summary><p>Keputusan sistem &amp; equity: sekali sehari (~8:15–8:30 pagi Malaysia, selepas lilin harian ditutup 8:00 pagi). Harga pasaran di dashboard: real-time setiap saat melalui WebSocket Binance.</p></details>
+    <details class="faq"><summary>Bila data dashboard dikemas kini?</summary><p>Keputusan sistem &amp; equity: sekali sehari (~8:15–8:30 pagi Malaysia, selepas lilin harian ditutup 8:00 pagi). Harga pasaran di dashboard: real-time melalui data pasaran awam Binance (binance.vision), fallback setiap 15 saat.</p></details>
     <details class="faq"><summary>Apa jadi kalau internet/sistem rosak?</summary><p>Reka bentuk fail-safe: jika data tidak lengkap atau lapuk, sistem ENGGAN membuat keputusan (tiada trade) dan menghantar amaran — ia tidak akan meneka. Semua rekod disimpan dalam repositori berversi (setiap perubahan boleh diaudit).</p></details>
     <details class="faq"><summary>Kenapa carta equity nampak rata?</summary><p>Paper trading baru bermula Julai 2026 — carta diisi SATU titik sehari. Selepas beberapa bulan ia menjadi rekod prestasi sebenar yang digunakan untuk memilih sistem terbaik.</p></details>
     <details class="faq"><summary>Apa maksud "DIPEGANG" pada kad aset?</summary><p>Aset itu sedang berada dalam portfolio sistem tersebut. Kad tanpa label = dipantau tetapi tidak dipegang sekarang.</p></details>
@@ -334,23 +334,40 @@ async function loadStates(){
   renderAll();
 }
 
+// Harga pasaran: endpoint RASMI data-pasaran Binance (binance.vision).
+// stream.binance.com & api.binance.com DISEKAT dari rangkaian Malaysia (timeout,
+// disahkan 28 Sep 2026; SC arah Binance tutup di MY sejak 2021). binance.vision OK.
+let wsLive = false;
+function setFeed(on, label){
+  document.getElementById("wsdot").className = on ? "dot on" : "dot";
+  document.getElementById("wslabel").textContent = label;
+}
+let lastRender = 0;
+function handleTick(d){
+  live[d.s] = {price: parseFloat(d.c), chg: (parseFloat(d.c)/parseFloat(d.o)-1)*100};
+  const now = Date.now();
+  if (now - lastRender > 900){ lastRender = now; renderAll(); }
+}
+async function pollREST(){
+  if (wsLive) return;
+  try{
+    const r = await fetch("https://data-api.binance.vision/api/v3/ticker/24hr?type=MINI&symbols=" +
+                          encodeURIComponent(JSON.stringify(ALLSYMS)), {cache:"no-store"});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    for (const t of await r.json()) handleTick({s:t.symbol, c:t.lastPrice, o:t.openPrice});
+    if (!wsLive) setFeed(true, "Live (15s)");
+  }catch(e){ if (!wsLive) setFeed(false, "sambung semula…"); }
+}
 function connectWS(){
   const streams = ALLSYMS.map(s=>s.toLowerCase()+"@miniTicker").join("/");
-  const ws = new WebSocket("wss://stream.binance.com:9443/stream?streams=" + streams);
-  ws.onopen = ()=>{ document.getElementById("wsdot").className="dot on";
-                    document.getElementById("wslabel").textContent="Live"; };
-  let last = 0;
-  ws.onmessage = (ev)=>{
-    const d = JSON.parse(ev.data).data;
-    live[d.s] = {price: parseFloat(d.c), chg: (parseFloat(d.c)/parseFloat(d.o)-1)*100};
-    const now = Date.now();
-    if (now - last > 900){ last = now; renderAll(); }
-  };
-  ws.onclose = ()=>{ document.getElementById("wsdot").className="dot";
-                     document.getElementById("wslabel").textContent="sambung semula…";
-                     setTimeout(connectWS, 3000); };
+  const ws = new WebSocket("wss://data-stream.binance.vision/stream?streams=" + streams);
+  ws.onopen = ()=>{ wsLive = true; setFeed(true, "Live"); };
+  ws.onmessage = (ev)=>handleTick(JSON.parse(ev.data).data);
+  ws.onclose = ()=>{ wsLive = false; pollREST(); setTimeout(connectWS, 5000); };
   ws.onerror = ()=>ws.close();
 }
+setInterval(pollREST, 15000);
+pollREST();
 
 setInterval(()=>{ document.getElementById("clock").textContent =
   new Date().toLocaleTimeString("ms-MY",{timeZone:"Asia/Kuala_Lumpur"}); }, 1000);

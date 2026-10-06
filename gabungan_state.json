@@ -1,9 +1,9 @@
 {
   "name": "GABUNGAN",
-  "equity": 3008.55,
+  "equity": 3017.65,
   "initial": 3000.0,
-  "pnl_usd": 8.55,
-  "pnl_pct": 0.29,
+  "pnl_usd": 17.65,
+  "pnl_pct": 0.59,
   "cash_usd": 753.31,
   "holdings": {
     "ETHUSDT": 0.27446898,
@@ -14,24 +14,24 @@
       "qty": 0.27446898,
       "avg_cost": 2707.4562,
       "since": "2026-09-28T18:00:17.505909+00:00",
-      "last_price": 2726.94
+      "last_price": 2709.98
     },
     "HLAL": {
       "qty": 19.931054,
       "avg_cost": 75.439,
       "since": "2026-09-28T18:00:17.505909+00:00",
-      "last_price": 75.5999,
-      "price_date": "2026-10-02"
+      "last_price": 76.29,
+      "price_date": "2026-10-05"
     }
   },
   "allocation_pct": {
-    "ETH": 24.9,
-    "HLAL": 50.1,
+    "ETH": 24.6,
+    "HLAL": 50.4,
     "USDT": 25.0
   },
   "n_trades": 4,
-  "bar_date": "2026-10-04",
-  "updated_at": "2026-10-05T06:11:48.597446+00:00",
+  "bar_date": "2026-10-05",
+  "updated_at": "2026-10-06T06:50:20.990323+00:00",
   "history": [
     {
       "date": "2026-09-27",
@@ -64,6 +64,10 @@
     {
       "date": "2026-10-04",
       "equity": 3008.55
+    },
+    {
+      "date": "2026-10-05",
+      "equity": 3017.65
     }
   ]
 }

@@ -1,37 +1,37 @@
 {
   "name": "GABUNGAN",
-  "equity": 2777.45,
+  "equity": 2736.63,
   "initial": 3000.0,
-  "pnl_usd": -222.55,
-  "pnl_pct": -7.42,
-  "cash_usd": 387.95,
+  "pnl_usd": -263.37,
+  "pnl_pct": -8.78,
+  "cash_usd": 417.69,
   "holdings": {
-    "BTCUSDT": 0.01275741,
+    "BTCUSDT": 0.01236753,
     "HLAL": 19.433719
   },
   "positions": {
     "BTC": {
-      "qty": 0.01275741,
+      "qty": 0.01236753,
       "avg_cost": 78128.9225,
       "since": "2026-11-01T06:48:57.057097+00:00",
-      "last_price": 78354.0
+      "last_price": 76816.0
     },
     "HLAL": {
       "qty": 19.433719,
       "avg_cost": 75.439,
       "since": "2026-09-28T18:00:17.505909+00:00",
-      "last_price": 71.52,
-      "price_date": "2026-10-30"
+      "last_price": 70.44,
+      "price_date": "2026-11-02"
     }
   },
   "allocation_pct": {
-    "BTC": 36.0,
+    "BTC": 34.7,
     "HLAL": 50.0,
-    "USDT": 14.0
+    "USDT": 15.3
   },
-  "n_trades": 14,
-  "bar_date": "2026-11-01",
-  "updated_at": "2026-11-02T06:47:48.036235+00:00",
+  "n_trades": 15,
+  "bar_date": "2026-11-02",
+  "updated_at": "2026-11-03T07:13:32.089239+00:00",
   "history": [
     {
       "date": "2026-09-27",
@@ -176,6 +176,10 @@
     {
       "date": "2026-11-01",
       "equity": 2777.45
+    },
+    {
+      "date": "2026-11-02",
+      "equity": 2736.63
     }
   ]
 }
